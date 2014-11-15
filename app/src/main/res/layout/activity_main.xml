@@ -71,6 +71,14 @@
         android:id="@+id/signal_measure"
         android:layout_toEndOf="@+id/textView6"
         android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_alignParentStart="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Reset"
+        android:id="@+id/reset"
+        android:layout_alignBottom="@+id/signal_measure"
+        android:layout_alignParentEnd="true" />
 
 </RelativeLayout>

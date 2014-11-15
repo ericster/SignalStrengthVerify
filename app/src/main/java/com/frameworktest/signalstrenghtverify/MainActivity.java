@@ -3,6 +3,7 @@ package com.frameworktest.signalstrenghtverify;
 import android.app.Activity;
 import android.os.Bundle;
 import android.telephony.SignalStrength;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -12,14 +13,16 @@ import android.widget.TextView;
 
 public class MainActivity extends Activity {
 
+    private static final String TAG = "SignalStrengthTest";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Button button = (Button) findViewById(R.id.signal_measure);
-
-        button.setOnClickListener(new View.OnClickListener()
+        Button measure_button = (Button) findViewById(R.id.signal_measure);
+        Button reset_button = (Button) findViewById(R.id.reset);
+        measure_button.setOnClickListener(new View.OnClickListener()
         {
             public void onClick(View v)
             {
@@ -27,20 +30,42 @@ public class MainActivity extends Activity {
 
             }
         });
+        reset_button.setOnClickListener(new View.OnClickListener()
+        {
+            public void onClick(View v)
+            {
+                resetSignalStrength();
+
+            }
+        });
+    }
+
+    private void resetSignalStrength() {
+        TextView gsm_value_box = (TextView) findViewById(R.id.gsm_rssi);
+        TextView umts_value_box = (TextView) findViewById(R.id.umts_rscp);
+        TextView lte_value_box = (TextView) findViewById(R.id.lte_rsrp);
+        gsm_value_box.setText("none");
+        umts_value_box.setText("none");
+        lte_value_box.setText("none");
     }
 
     private void measureSignalStrength() {
-        SignalStrength signalStrength = null;
-        int gsm_rssi = signalStrength.getGsmSignalStrength();
-        int umts_rscp = signalStrength.getGsmSignalStrength();
-        int lte_rsrp = signalStrength.getLteRsrp();
+        SignalStrength signalStrength = new SignalStrength();
+        int gsm_rssi, umts_rscp, lte_rsrp;
+        gsm_rssi = signalStrength.getGsmSignalStrength();
+        umts_rscp = signalStrength.getGsmSignalStrength();
+        lte_rsrp = signalStrength.getLteRsrp();
+
+        Log.i(TAG, "gsm_rssi = " + gsm_rssi);
+        Log.i(TAG, "umtis_rscp = " + umts_rscp);
+        Log.i(TAG, "lte_rsrp = " + lte_rsrp);
 
         TextView gsm_value_box = (TextView) findViewById(R.id.gsm_rssi);
         TextView umts_value_box = (TextView) findViewById(R.id.umts_rscp);
         TextView lte_value_box = (TextView) findViewById(R.id.lte_rsrp);
-        gsm_value_box.setText(gsm_rssi);
-        umts_value_box.setText(umts_rscp);
-        lte_value_box.setText(lte_rsrp);
+        gsm_value_box.setText(Integer.toString(gsm_rssi));
+        umts_value_box.setText(Integer.toString(umts_rscp));
+        lte_value_box.setText(Integer.toString(lte_rsrp));
 
     }
 

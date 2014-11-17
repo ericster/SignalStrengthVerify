@@ -44,12 +44,24 @@ public class MainActivity extends Activity {
     }
 
     private void resetSignalStrength() {
-        TextView gsm_value_box = (TextView) findViewById(R.id.gsm_rssi);
-        TextView umts_value_box = (TextView) findViewById(R.id.umts_rscp);
-        TextView lte_value_box = (TextView) findViewById(R.id.lte_rsrp);
-        gsm_value_box.setText("none");
-        umts_value_box.setText("none");
-        lte_value_box.setText("none");
+        TextView gsm_dbm_box = (TextView) findViewById(R.id.gsm_dbm);
+        TextView gsm_asu_box = (TextView) findViewById(R.id.gsm_asu);
+        TextView gsm_signal_box = (TextView) findViewById(R.id.gsm_signal);
+        gsm_dbm_box.setText("none");
+        gsm_asu_box.setText("none");
+        gsm_signal_box.setText("");
+
+        TextView lte_dbm_box = (TextView) findViewById(R.id.lte_dbm);
+        TextView lte_rsrp_box = (TextView) findViewById(R.id.lte_rsrp);
+        TextView lte_asu_box = (TextView) findViewById(R.id.lte_asu);
+        TextView lte_signal_box = (TextView) findViewById(R.id.lte_signal);
+        lte_dbm_box.setText("none");
+        lte_rsrp_box.setText("none");
+        lte_asu_box.setText("none");
+        lte_signal_box.setText("none");
+
+        TextView get_dbm_box = (TextView) findViewById(R.id.get_dbm);
+        get_dbm_box.setText("none");
     }
 
     private void measureSignalStrength() {
@@ -118,12 +130,25 @@ public class MainActivity extends Activity {
 
 
 
-            TextView gsm_value_box = (TextView) findViewById(R.id.gsm_rssi);
-            TextView umts_value_box = (TextView) findViewById(R.id.umts_rscp);
-            TextView lte_value_box = (TextView) findViewById(R.id.lte_rsrp);
-            gsm_value_box.setText( "gsm " + signalStrength.getGsmSignalStrength());
-            umts_value_box.setText("lte signal " + signalStrength.getLteSignalStrength());
-            lte_value_box.setText("lte rsrp " + signalStrength.getLteRsrp());
+            TextView gsm_dbm_box = (TextView) findViewById(R.id.gsm_dbm);
+            TextView gsm_asu_box = (TextView) findViewById(R.id.gsm_asu);
+            TextView gsm_signal_box = (TextView) findViewById(R.id.gsm_signal);
+            gsm_dbm_box.setText( "" + signalStrength.getGsmDbm());
+            gsm_asu_box.setText("" + signalStrength.getGsmAsuLevel());
+            gsm_signal_box.setText("" + signalStrength.getGsmSignalStrength());
+
+            TextView lte_dbm_box = (TextView) findViewById(R.id.lte_dbm);
+            TextView lte_rsrp_box = (TextView) findViewById(R.id.lte_rsrp);
+            TextView lte_asu_box = (TextView) findViewById(R.id.lte_asu);
+            TextView lte_signal_box = (TextView) findViewById(R.id.lte_signal);
+            lte_dbm_box.setText( "" + signalStrength.getLteDbm());
+            lte_rsrp_box.setText( "" + signalStrength.getLteRsrp());
+            lte_asu_box.setText("" + signalStrength.getLteAsuLevel());
+            lte_signal_box.setText("" + signalStrength.getLteSignalStrength());
+
+            TextView get_dbm_box = (TextView) findViewById(R.id.get_dbm);
+            get_dbm_box.setText( "" + signalStrength.getDbm());
+
         }
     }
 

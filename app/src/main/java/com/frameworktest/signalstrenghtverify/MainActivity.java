@@ -130,25 +130,61 @@ public class MainActivity extends Activity {
 
 
 
+            String network_string = getNetworkClass();
+            String gsm_umts_network = "";
+            String lte_network = "";
+            if (network_string == "4g") {
+                lte_network = " in " + network_string;
+            } else {
+                gsm_umts_network = " in " + network_string ;
+            }
+
             TextView gsm_dbm_box = (TextView) findViewById(R.id.gsm_dbm);
             TextView gsm_asu_box = (TextView) findViewById(R.id.gsm_asu);
             TextView gsm_signal_box = (TextView) findViewById(R.id.gsm_signal);
-            gsm_dbm_box.setText( "" + signalStrength.getGsmDbm());
-            gsm_asu_box.setText("" + signalStrength.getGsmAsuLevel());
-            gsm_signal_box.setText("" + signalStrength.getGsmSignalStrength());
+            gsm_dbm_box.setText( signalStrength.getGsmDbm() + gsm_umts_network);
+            gsm_asu_box.setText( signalStrength.getGsmAsuLevel() + gsm_umts_network);
+            gsm_signal_box.setText(signalStrength.getGsmSignalStrength() + gsm_umts_network);
 
             TextView lte_dbm_box = (TextView) findViewById(R.id.lte_dbm);
             TextView lte_rsrp_box = (TextView) findViewById(R.id.lte_rsrp);
             TextView lte_asu_box = (TextView) findViewById(R.id.lte_asu);
             TextView lte_signal_box = (TextView) findViewById(R.id.lte_signal);
-            lte_dbm_box.setText( "" + signalStrength.getLteDbm());
-            lte_rsrp_box.setText( "" + signalStrength.getLteRsrp());
-            lte_asu_box.setText("" + signalStrength.getLteAsuLevel());
-            lte_signal_box.setText("" + signalStrength.getLteSignalStrength());
+            lte_dbm_box.setText( signalStrength.getLteDbm() + lte_network);
+            lte_rsrp_box.setText( signalStrength.getLteRsrp() + lte_network);
+            lte_asu_box.setText(signalStrength.getLteAsuLevel() + lte_network);
+            lte_signal_box.setText(signalStrength.getLteSignalStrength() + lte_network);
 
             TextView get_dbm_box = (TextView) findViewById(R.id.get_dbm);
             get_dbm_box.setText( "" + signalStrength.getDbm());
 
+        }
+    }
+
+    public String getNetworkClass() {
+        TelephonyManager mTelephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+        int networkType = mTelephonyManager.getNetworkType();
+        switch (networkType) {
+            case TelephonyManager.NETWORK_TYPE_GPRS:
+            case TelephonyManager.NETWORK_TYPE_EDGE:
+            case TelephonyManager.NETWORK_TYPE_CDMA:
+            case TelephonyManager.NETWORK_TYPE_1xRTT:
+            case TelephonyManager.NETWORK_TYPE_IDEN:
+                return "2g";
+            case TelephonyManager.NETWORK_TYPE_UMTS:
+            case TelephonyManager.NETWORK_TYPE_EVDO_0:
+            case TelephonyManager.NETWORK_TYPE_EVDO_A:
+            case TelephonyManager.NETWORK_TYPE_HSDPA:
+            case TelephonyManager.NETWORK_TYPE_HSUPA:
+            case TelephonyManager.NETWORK_TYPE_HSPA:
+            case TelephonyManager.NETWORK_TYPE_EVDO_B:
+            case TelephonyManager.NETWORK_TYPE_EHRPD:
+            case TelephonyManager.NETWORK_TYPE_HSPAP:
+                return "3g";
+            case TelephonyManager.NETWORK_TYPE_LTE:
+                return "4g";
+            default:
+                return "Unknown ";
         }
     }
 

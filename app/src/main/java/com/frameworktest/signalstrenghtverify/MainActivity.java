@@ -13,6 +13,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
 
 public class MainActivity extends Activity {
 
@@ -60,32 +63,36 @@ public class MainActivity extends Activity {
         lte_asu_box.setText("none");
         lte_signal_box.setText("none");
 
-        TextView get_dbm_box = (TextView) findViewById(R.id.get_dbm);
-        get_dbm_box.setText("none");
+        TextView get_level_box = (TextView) findViewById(R.id.get_level);
+        get_level_box.setText("none");
     }
 
     private void measureSignalStrength() {
+        /*
         SignalStrength signalStrength = new SignalStrength();
         int gsm_rssi, umts_rscp, lte_rsrp;
         String updateMsg = "";
         gsm_rssi = signalStrength.getGsmSignalStrength();
         umts_rscp = signalStrength.getGsmSignalStrength();
-        lte_rsrp = signalStrength.getLteRsrp();
+        //lte_rsrp = signalStrength.getLteRsrp();
 
         Log.i(TAG, "gsm_rssi = " + gsm_rssi);
         Log.i(TAG, "umtis_rscp = " + umts_rscp);
-        Log.i(TAG, "lte_rsrp = " + lte_rsrp);
+        //Log.i(TAG, "lte_rsrp = " + lte_rsrp);
+        */
 
         MyPhoneStateListener myListener = new MyPhoneStateListener();
         TelephonyManager mTelephonyManager  = ( TelephonyManager )getSystemService(Context.TELEPHONY_SERVICE);
         mTelephonyManager.listen(myListener, PhoneStateListener.LISTEN_SIGNAL_STRENGTHS);
 
 
+        /*
         if (mTelephonyManager.getPhoneType() == TelephonyManager.PHONE_TYPE_CDMA) {
             updateMsg = "cdma dBM=" + signalStrength.getCdmaDbm();
         } else if  (mTelephonyManager.getPhoneType() == TelephonyManager.PHONE_TYPE_GSM) {
             updateMsg = "gsm signal=" + signalStrength.getGsmSignalStrength();
         }
+        */
 
         /*
         TextView gsm_value_box = (TextView) findViewById(R.id.gsm_rssi);
@@ -103,32 +110,67 @@ public class MainActivity extends Activity {
         public void onSignalStrengthsChanged(SignalStrength signalStrength){
             super.onSignalStrengthsChanged(signalStrength);
             Log.i(TAG, "onSignalStrengthsChanged: " + signalStrength);
-            if (signalStrength.isGsm()) {
-                Log.i(TAG, "onSignalStrengthsChanged: getGsmBitErrorRate "
-                        + signalStrength.getGsmBitErrorRate());
-                Log.i(TAG, "onSignalStrengthsChanged: getGsmSignalStrength "
-                        + signalStrength.getGsmSignalStrength());
-            } else if (signalStrength.getCdmaDbm() > 0) {
-                Log.i(TAG, "onSignalStrengthsChanged: getCdmaDbm "
-                        + signalStrength.getCdmaDbm());
-                Log.i(TAG, "onSignalStrengthsChanged: getCdmaEcio "
-                        + signalStrength.getCdmaEcio());
-            } else {
-                Log.i(TAG, "onSignalStrengthsChanged: getEvdoDbm "
-                        + signalStrength.getEvdoDbm());
-                Log.i(TAG, "onSignalStrengthsChanged: getEvdoEcio "
-                        + signalStrength.getEvdoEcio());
-                Log.i(TAG, "onSignalStrengthsChanged: getEvdoSnr "
-                        + signalStrength.getEvdoSnr());
+
+            // #1 row
+            TextView gsm_dbm_box = (TextView) findViewById(R.id.gsm_dbm);
+            TextView gsm_asu_box = (TextView) findViewById(R.id.gsm_asu);
+            TextView gsm_signal_box = (TextView) findViewById(R.id.gsm_signal);
+
+            // #2 row
+            TextView lte_dbm_box = (TextView) findViewById(R.id.lte_dbm);
+            TextView lte_rsrp_box = (TextView) findViewById(R.id.lte_rsrp);
+            TextView lte_asu_box = (TextView) findViewById(R.id.lte_asu);
+            TextView lte_signal_box = (TextView) findViewById(R.id.lte_signal);
+
+            // #3 row
+            TextView get_level_box = (TextView) findViewById(R.id.get_level);
+            try {
+                Method[] methods = android.telephony.SignalStrength.class
+                        .getMethods();
+                for (Method mthd : methods) {
+                    if (mthd.getName().equals("getLteSignalStrength")){
+                        lte_signal_box.setText( "" + mthd.invoke(signalStrength));
+
+                    }
+                    if (mthd.getName().equals("getLteAsuLevel")){
+                        lte_asu_box.setText( "" + mthd.invoke(signalStrength));
+
+                    }
+                    if (mthd.getName().equals("getLteRsrp")){
+                        lte_rsrp_box.setText( "" + mthd.invoke(signalStrength));
+
+                    }
+                    if (mthd.getName().equals("getLteDbm")){
+                        lte_dbm_box.setText( "" + mthd.invoke(signalStrength));
+
+                    }
+                    if (mthd.getName().equals("getGsmDbm")){
+                        gsm_dbm_box.setText( "" + mthd.invoke(signalStrength));
+                    }
+                    if (mthd.getName().equals("getGsmAsuLevel")){
+                        gsm_asu_box.setText("" + mthd.invoke(signalStrength));
+
+                    }
+                    if (mthd.getName().equals("getGsmSignalStrength")){
+                        gsm_signal_box.setText( "" + mthd.invoke(signalStrength));
+                    }
+                    if (mthd.getName().equals("getLevel")){
+                        get_level_box.setText( "" + mthd.invoke(signalStrength));
+                        Log.i(TAG, "onSignalChanged: " + mthd.getName() + " " + mthd.invoke(signalStrength));
+                    }
+
+                    //Log.i(TAG, "onSignalStrengthsChanged: " + mthd.getName() + " " + mthd.invoke(signalStrength));
+
+                    }
+            } catch (SecurityException e) {
+                e.printStackTrace();
+            } catch (IllegalArgumentException e) {
+                e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            } catch (InvocationTargetException e) {
+                e.printStackTrace();
             }
-
-            Log.i(TAG, "onSignalStrengthsChanged: LteSignalStrength " + signalStrength.getLteSignalStrength());
-            Log.i(TAG, "onSignalStrengthsChanged: getLteRsrp " + signalStrength.getLteRsrp());
-            Log.i(TAG, "onSignalStrengthsChanged: getLteRsrq " + signalStrength.getLteRsrq());
-            Log.i(TAG, "onSignalStrengthsChanged: getLteRsssnr " + signalStrength.getLteRssnr());
-            Log.i(TAG, "onSignalStrengthsChanged: getLteCqi " + signalStrength.getLteCqi());
-
-
 
             String network_string = getNetworkClass();
             String gsm_umts_network = "";
@@ -138,28 +180,9 @@ public class MainActivity extends Activity {
             } else {
                 gsm_umts_network = " in " + network_string ;
             }
-
-            TextView gsm_dbm_box = (TextView) findViewById(R.id.gsm_dbm);
-            TextView gsm_asu_box = (TextView) findViewById(R.id.gsm_asu);
-            TextView gsm_signal_box = (TextView) findViewById(R.id.gsm_signal);
-            gsm_dbm_box.setText( signalStrength.getGsmDbm() + gsm_umts_network);
-            gsm_asu_box.setText( signalStrength.getGsmAsuLevel() + gsm_umts_network);
-            gsm_signal_box.setText(signalStrength.getGsmSignalStrength() + gsm_umts_network);
-
-            TextView lte_dbm_box = (TextView) findViewById(R.id.lte_dbm);
-            TextView lte_rsrp_box = (TextView) findViewById(R.id.lte_rsrp);
-            TextView lte_asu_box = (TextView) findViewById(R.id.lte_asu);
-            TextView lte_signal_box = (TextView) findViewById(R.id.lte_signal);
-            lte_dbm_box.setText( signalStrength.getLteDbm() + lte_network);
-            lte_rsrp_box.setText( signalStrength.getLteRsrp() + lte_network);
-            lte_asu_box.setText(signalStrength.getLteAsuLevel() + lte_network);
-            lte_signal_box.setText(signalStrength.getLteSignalStrength() + lte_network);
-
-            TextView get_dbm_box = (TextView) findViewById(R.id.get_dbm);
-            get_dbm_box.setText( "" + signalStrength.getDbm());
-
         }
     }
+
 
     public String getNetworkClass() {
         TelephonyManager mTelephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
